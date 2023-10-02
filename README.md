@@ -68,7 +68,7 @@ int main() {
 }
 ```
 
-```
+```rust
 use std::io;
 
 // Enum to represent a calculation operation
