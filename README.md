@@ -66,11 +66,9 @@ int main() {
 
     return 0;
 }
+```
 
-Rust Example:
-
-rust
-
+```
 use std::io;
 
 // Enum to represent a calculation operation
@@ -96,9 +94,7 @@ fn calculate(op: Operation, a: f64, b: f64) -> Option<f64> {
         }
     }
 }
-```
 
-```rust
 fn main() {
     println!("Enter two numbers and an operation (+, -, *, /):");
     let mut input = String::new();
