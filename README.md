@@ -71,7 +71,7 @@ int main() {
 ```rust
 use std::io;
 
-// Enum to represent a calculation operation
+/// Enum to represent a calculation operation
 enum Operation {
     Add,
     Subtract,
@@ -85,16 +85,23 @@ fn calculate(op: Operation, a: f64, b: f64) -> Option<f64> {
         Operation::Add => Some(a + b),
         Operation::Subtract => Some(a - b),
         Operation::Multiply => Some(a * b),
-        Operation::Divide => {
-            if b == 0.0 {
-                None // Error: Division by zero
-            } else {
-                Some(a / b)
-            }
+        Operation::Divide => (b != 0.0).then(|| a / b),
+    }    
+}    
+ 
+impl std::str::FromStr for Operation {
+    type Err = io::Error;
+    fn from_str(op: &str) -> Result<Self, Self::Err> {
+        match op {
+                "+" => Ok(Operation::Add),
+                "-" => Ok(Operation::Subtract),
+                "*" => Ok(Operation::Multiply),
+                "/" => Ok(Operation::Divide),  
+                _ => Err(io::Error::new(io::ErrorKind::InvalidData, "unexpected operation")),
         }
     }
 }
-
+ 
 fn main() {
     println!("Enter two numbers and an operation (+, -, *, /):");
     let mut input = String::new();
@@ -105,22 +112,11 @@ fn main() {
     if parts.len() != 3 {
         println!("Invalid input");
         return;
-    }
-
-    let num1: f64 = parts[0].parse().expect("Invalid number");
-    let num2: f64 = parts[1].parse().expect("Invalid number");
-    let op: char = parts[2].chars().next().expect("Invalid operation");
-
-    let operation = match op {
-        '+' => Operation::Add,
-        '-' => Operation::Subtract,
-        '*' => Operation::Multiply,
-        '/' => Operation::Divide,
-        _ => {
-            println!("Invalid operation");
-            return;
-        }
     };
+
+    let num1: f64 = parts[0].parse().expect("Invalid 1st number");
+    let num2: f64 = parts[1].parse().expect("Invalid 2nd number");
+    let operation: Operation = parts[2].parse().unwrap();
 
     match calculate(operation, num1, num2) {
         Some(result) => println!("Result: {}", result),
